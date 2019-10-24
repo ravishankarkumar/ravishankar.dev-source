@@ -6,7 +6,7 @@ var swig = require("swig");
 
 function cleanPublic() {
   var pubDir = __dirname + "/../ravishankar.dev";
-  fsex.emptyDirSync(pubDir);
+  // fsex.emptyDirSync(pubDir);
 }
 
 function copyAssets() {

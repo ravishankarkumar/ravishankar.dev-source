@@ -5,17 +5,17 @@ var fsex = require("fs-extra");
 var swig = require("swig");
 
 function cleanPublic() {
-  var pubDir = __dirname + "/../ravishankar.dev";
+  var pubDir = __dirname + "/../ravishankar.tech";
   // fsex.emptyDirSync(pubDir);
 }
 
 function copyAssets() {
-  fsex.copySync(__dirname + "/assets/", __dirname + "/../ravishankar.dev/");
+  fsex.copySync(__dirname + "/assets/", __dirname + "/../ravishankar.tech/");
 }
 
 function convertFile(path) {
   var src = __dirname + "/src" + path;
-  var dst = __dirname + "/../ravishankar.dev" + path;
+  var dst = __dirname + "/../ravishankar.tech" + path;
 
   var content = fs.readFileSync(src, "utf8");
   var pattern = "<!-- params"
@@ -29,7 +29,7 @@ function convertFile(path) {
 }
 
 function ensurePublicPath(path) {
-  var dpath = __dirname + "/../ravishankar.dev" + path;
+  var dpath = __dirname + "/../ravishankar.tech" + path;
   if(!fs.existsSync(dpath)) {
     fs.mkdirSync(dpath);
   }

@@ -1,0 +1,220 @@
+{% extends '../../template/base.html' %}
+
+{% block body_content %}
+  <!-- Post Content -->
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-10 col-md-10 mx-auto">
+            <h2 class="section-heading">Const is not immutable</h2>
+            <p>This might take you with surprise, but yes, const is not immutable. Const just creates immutable binding, which means, the variables which has been defined as const cannot be reassigned. The value of the variable in not guaranteed to be immutable. See the example below:</p>
+<pre>
+<code class="language-js">const myObj = {};
+myObj.myName = 'UrbanClap';
+console.log(myObj.myName);
+
+//The output would be:
+//UrbanClap
+</code>
+</pre>
+
+          <p>Let's see a second example:</p>
+<pre>
+<code class="language-js">const myArr = [];
+myArr.push(10);
+console.log(myArr); 
+
+//The output would be:
+//[ 10 ]
+</code>
+</pre>
+          <h2 class="section-heading">How to make it immutable</h2>
+
+          <blockquote class="blockquote">The primitive types are already immutable.</blockquote>
+
+          <p>Example:</p>
+
+<pre>
+<code class="language-js">const myVar = 20;
+myVar = 30;
+console.log(myVar);
+//The you try to run the above program, it will throw an error
+//TypeError: Assignment to constant variable.
+</code>
+</pre>
+
+          <blockquote class="blockquote">Non-primitives are mutable</blockquote>
+
+          <p>See an example below.</p>
+
+<pre>
+<code class="language-js">const myArr = [30];
+const myObj = {
+  uc: 'UrbanClap'
+}
+myArr.push(20);
+Object.defineProperty(myObj, 'name', {
+  value: 'Ravi',
+  enumerable: true
+});
+console.log(myObj);
+console.log(myArr);
+
+//The output would be:
+//{ uc: 'UrbanClap', name: 'Ravi' }
+//[ 30, 20 ]
+</code>
+</pre>
+
+          <p>Notice how I defined name property on myObj, I will come back to it very soon.</p>
+
+          <blockquote class="blockquote">Making non-primitives immutable.</blockquote>
+          
+<pre>
+<code class="language-js">const myArr = [30];
+const myObj = {
+  uc: 'UrbanClap'
+}
+Object.freeze(myArr);
+Object.freeze(myObj);
+myArr.push(20);
+Object.defineProperty(myObj, 'name', {
+  value: 'Ravi',
+  enumerable: true
+});
+console.log(myObj);
+console.log(myArr);
+</code>
+</pre>
+
+          <p>The above program will give errors.</p>
+
+          <p>Since, almost everything in Javascript derives from Object, we can use Object.freeze to make it practically immutable. Please note that, Object.freeze shallow in nature, which means the object at the top level becomes immutable, but sub-objects will not. Let's see an example:</p>
+
+<pre>
+<code class="language-js">const myStudent = {
+  name: 'Navneet',
+  details: {
+    college: 'Ewing'
+  }
+}
+Object.freeze(myStudent);
+myStudent.details.course = 'B.Sc.'
+console.log(myStudent);
+
+//The output would be:
+//{ name: 'Navneet',
+//  details: { college: 'Ewing', course: 'B.Sc.' } }
+</code>
+</pre>
+
+          <h2 class="section-heading">Object.seal</h2>
+
+          <p>Object.seal seals the object for addition or deletion of any property, but unlike freeze, the existing properties can be reassigned or reconfigured.</p>
+
+<pre>
+<code class="language-js">
+const myObj = {
+  name: 'Ravi'
+};
+Object.seal(myObj);
+myObj.name = 'Student';//allowed
+myObj.newName = 'NewStudent';//will fail
+console.log(myObj)
+</code>
+</pre>
+
+          <h2 class="section-heading">Object.defineProperty</h2>
+
+          <p>To understand the concept better, let's look at Object.defineProperty. This method is used to define properties on an object. And it can take 6 parameters for defining a property.</p>
+
+          <p>There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.</p>
+
+          <table style="width:100%">
+            <tr>
+              <th>property</th>
+              <th>description</th>
+            </tr>
+            <tr>
+              <td>value</td>
+              <td>The value to assign to the property</td>
+            </tr>
+            <tr>
+              <td>writable</td>
+              <td>Whether the value of the property can be assigned or not</td>
+            </tr>
+            <tr>
+              <td>enumerable</td>
+              <td>whether the property will be enumerated in for-in loop or not</td>
+            </tr>
+            <tr>
+              <td>configurable</td>
+              <td>whether it will be possible to redefine the property descriptor or not</td>
+            </tr>
+            <tr>
+              <td>get</td>
+              <td>A function to be called that will return the value of the array</td>
+            </tr>
+            <tr>
+              <td>set</td>
+              <td>A function to be called when the property is assigned a value</td>
+            </tr>
+          </table>
+
+          <p>A property on an object can be created or modified using this method. Let's say in the above case, I want to make the property 'name', read only. I would do the following.</p>
+
+<pre>
+<code class="language-js">
+const myStudent = {
+  name: 'Navneet',
+  details: {
+    college: 'Ewing'
+  }
+}
+myStudent.details.course = 'B.Sc.'
+Object.defineProperty(myStudent, 'name', {
+  writable: false
+})
+myStudent.name = 'NavneedModified';// This will silently fail
+console.log(myStudent)
+
+//The output would be:
+{ name: 'Navneet',
+  details: { college: 'Ewing', course: 'B.Sc.' } }
+</code>
+</pre>
+
+            <p>We can also make use of getters and setters to modify values.</p>
+
+<pre>
+<code class="language-js">
+const myObj = { };
+Object.defineProperty(myObj, 'newName', {
+  enumerable: true,
+  set: function(val) {
+    this.name = val + " Coin";
+  },
+  get: function () {
+    return this.name
+} })
+myObj.newName = "UC"
+console.log(myObj.newName)
+</code>
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </article>
+{% endblock %}
+
+
+<!-- params
+{
+  "pathToRoot"    : "../../",
+  "title"         : "Three farms bills are a welcome reform that will help farmers in long run",
+  "headerimage"   : "img/js-background.jpg",
+  "pageTitle"     : "Farm bill as reform",
+  "pageHeading"   : "Const data is not immutable, only its reference is immutable"
+}
+-->
